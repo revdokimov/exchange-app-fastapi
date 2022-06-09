@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:14
+    volumes:
+      - app-db-data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - .env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    networks:
+      - default
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "5050:5050"
+  
+  backend:
+    build: .
+    networks:
+      - default
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+
+volumes:
+  app-db-data:
+
